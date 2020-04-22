@@ -2,12 +2,19 @@
 
 
 #include "VRCharacter.h"
+#include "camera/CameraComponent.h"
 
 // Sets default values
 AVRCharacter::AVRCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	VRRoot = CreateDefaultSubobject<USceneComponent>(TEXT("VRRoot"));
+	VRRoot->SetupAttachment(GetRootComponent());
+	
+	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	Camera->SetupAttachment(VRRoot);
 
 }
 
@@ -30,5 +37,17 @@ void AVRCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	PlayerInputComponent->BindAxis(TEXT("Forward"), this, &AVRCharacter::MoveForward);
+	PlayerInputComponent->BindAxis(TEXT("Right"), this, &AVRCharacter::MoveRight);
+}
+
+void AVRCharacter::MoveForward(float Throttle)
+{
+	AddMovementInput(Throttle* Camera->GetForwardVector());
+}
+
+void AVRCharacter::MoveRight(float Throttle)
+{
+	AddMovementInput(Throttle* Camera->GetRightVector());
 }
 

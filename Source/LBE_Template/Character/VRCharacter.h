@@ -15,6 +15,7 @@ public:
 	// Sets default values for this character's properties
 	AVRCharacter();
 
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -25,5 +26,16 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+private:
+
+	void MoveForward(float Throttle);
+	void MoveRight(float Throttle);
+
+	UPROPERTY(VisibleAnywhere)
+	class UCameraComponent* Camera;
+
+	UPROPERTY(VisibleAnywhere)
+	class USceneComponent* VRRoot;
 
 };
