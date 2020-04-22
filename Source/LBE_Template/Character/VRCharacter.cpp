@@ -3,6 +3,7 @@
 
 #include "VRCharacter.h"
 #include "camera/CameraComponent.h"
+#include "Components/StaticMeshComponent.h"
 
 // Sets default values
 AVRCharacter::AVRCharacter()
@@ -15,6 +16,9 @@ AVRCharacter::AVRCharacter()
 	
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(VRRoot);
+
+	DestinationMarker = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DestinationMarker"));
+	DestinationMarker->SetupAttachment(VRRoot);
 
 }
 
@@ -29,6 +33,14 @@ void AVRCharacter::BeginPlay()
 void AVRCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	FVector NewCameraOffset = Camera->GetComponentLocation() - GetActorLocation();
+	NewCameraOffset.Z = 0;
+	//FVector::VectorPlaneProject();
+	AddActorWorldOffset(NewCameraOffset);
+	VRRoot->AddWorldOffset(-NewCameraOffset);
+
+	UpdateDestinationMarker();
 
 }
 
@@ -49,5 +61,19 @@ void AVRCharacter::MoveForward(float Throttle)
 void AVRCharacter::MoveRight(float Throttle)
 {
 	AddMovementInput(Throttle* Camera->GetRightVector());
+}
+
+void AVRCharacter::UpdateDestinationMarker()
+{
+	FVector Start = Camera->GetComponentLocation();
+	FVector End = Start + Camera->GetForwardVector()* MaxTeleportDistance;
+	FHitResult HitResult;
+	
+	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility);
+
+	if (bHit)
+	{
+		DestinationMarker->SetWorldLocation(HitResult.Location);
+	}
 }
 

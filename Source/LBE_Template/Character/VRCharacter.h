@@ -31,11 +31,20 @@ private:
 
 	void MoveForward(float Throttle);
 	void MoveRight(float Throttle);
+	void UpdateDestinationMarker();
 
 	UPROPERTY(VisibleAnywhere)
 	class UCameraComponent* Camera;
 
 	UPROPERTY(VisibleAnywhere)
 	class USceneComponent* VRRoot;
+
+	UPROPERTY(VisibleAnywhere)
+	class UStaticMeshComponent* DestinationMarker;
+
+	UPROPERTY(EditAnywhere)
+	float MaxTeleportDistance = 1000;
+
+
 
 };
