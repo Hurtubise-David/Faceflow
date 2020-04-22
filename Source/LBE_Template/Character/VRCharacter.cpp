@@ -70,10 +70,18 @@ void AVRCharacter::UpdateDestinationMarker()
 	FHitResult HitResult;
 	
 	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility);
+	DestinationMarker->SetCollisionProfileName(TEXT("NoCollision"));
+
 
 	if (bHit)
 	{
 		DestinationMarker->SetWorldLocation(HitResult.Location);
+		DestinationMarker->SetVisibility(true);
+
+	}
+	else
+	{
+		DestinationMarker->SetVisibility(false);
 	}
 }
 
