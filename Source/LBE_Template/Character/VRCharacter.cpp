@@ -4,6 +4,8 @@
 #include "VRCharacter.h"
 #include "camera/CameraComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/PostProcessComponent.h"
+#include "Materials/MaterialInstanceDynamic.h"
 
 // Sets default values
 AVRCharacter::AVRCharacter()
@@ -20,13 +22,21 @@ AVRCharacter::AVRCharacter()
 	DestinationMarker = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DestinationMarker"));
 	DestinationMarker->SetupAttachment(VRRoot);
 
+	VRPostProcessComponent = CreateDefaultSubobject<UPostProcessComponent>(TEXT("VRPostProcessComponent"));
+	VRPostProcessComponent->SetupAttachment(VRRoot);
+
 }
 
 // Called when the game starts or when spawned
 void AVRCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	if (Post_Process_mat != nullptr)
+	{
+		VRPostProcessMaterialInstance = UMaterialInstanceDynamic::Create(Post_Process_mat, this);
+		VRPostProcessComponent->AddOrUpdateBlendable(VRPostProcessMaterialInstance);
+	}
 }
 
 // Called every frame

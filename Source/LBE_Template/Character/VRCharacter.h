@@ -45,6 +45,12 @@ private:
 	UPROPERTY(EditAnywhere)
 	float MaxTeleportDistance = 1000;
 
+	UPROPERTY()
+	class UPostProcessComponent* VRPostProcessComponent;
 
+	UPROPERTY(EditAnywhere)
+	class UMaterialInterface* Post_Process_mat;
 
+	UPROPERTY()
+	class UMaterialInstanceDynamic* VRPostProcessMaterialInstance;
 };
