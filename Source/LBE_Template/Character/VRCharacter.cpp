@@ -36,6 +36,8 @@ void AVRCharacter::BeginPlay()
 	{
 		VRPostProcessMaterialInstance = UMaterialInstanceDynamic::Create(Post_Process_mat, this);
 		VRPostProcessComponent->AddOrUpdateBlendable(VRPostProcessMaterialInstance);
+
+		VRPostProcessMaterialInstance->SetScalarParameterValue(TEXT("Radius"), 0.2);
 	}
 }
 
@@ -51,6 +53,7 @@ void AVRCharacter::Tick(float DeltaTime)
 	VRRoot->AddWorldOffset(-NewCameraOffset);
 
 	UpdateDestinationMarker();
+	UpdateBlink();
 
 }
 
@@ -93,5 +96,30 @@ void AVRCharacter::UpdateDestinationMarker()
 	{
 		DestinationMarker->SetVisibility(false);
 	}
+}
+
+void AVRCharacter::UpdateBlink()
+{
+	float Speed = GetVelocity().Size();
+	float Radius = RadiusVsVelocity->GetFloatValue(Speed);
+
+	VRPostProcessMaterialInstance->SetScalarParameterValue(TEXT("Radius"), Radius);
+
+	FVector2D Center = ImageCenter();
+	VRPostProcessMaterialInstance->SetVectorParameterValue(TEXT("Center"), FLinearColor(Center.X, Center.Y, 0));
+	
+}
+
+FVector2D AVRCharacter::ImageCenter()
+{
+	FVector MovementDirection = GetVelocity().GetSafeNormal();
+	if (MovementDirection.IsNearlyZero())
+	{
+		return FVector2D(0.5, 0.5);
+	}
+
+	FVector WorldStationaryLocation = Camera->GetComponentLocation() + MovementDirection * 100;
+
+	return FVector2D(0.2, 0.2);
 }
 

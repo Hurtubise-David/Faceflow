@@ -32,6 +32,8 @@ private:
 	void MoveForward(float Throttle);
 	void MoveRight(float Throttle);
 	void UpdateDestinationMarker();
+	void UpdateBlink();
+	FVector2D ImageCenter();
 
 	UPROPERTY(VisibleAnywhere)
 	class UCameraComponent* Camera;
@@ -53,4 +55,7 @@ private:
 
 	UPROPERTY()
 	class UMaterialInstanceDynamic* VRPostProcessMaterialInstance;
+
+	UPROPERTY(EditAnywhere)
+	class UCurveFloat* RadiusVsVelocity;
 };
