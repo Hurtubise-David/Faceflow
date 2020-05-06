@@ -25,6 +25,8 @@ AVRCharacter::AVRCharacter()
 	VRPostProcessComponent = CreateDefaultSubobject<UPostProcessComponent>(TEXT("VRPostProcessComponent"));
 	VRPostProcessComponent->SetupAttachment(VRRoot);
 
+	SetReplicates(true);
+	SetReplicateMovement(true);
 }
 
 // Called when the game starts or when spawned
