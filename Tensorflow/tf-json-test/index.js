@@ -33,3 +33,7 @@ const y = tf.tidy(() => {
   
   console.log('numTensors (outside tidy): ' + tf.memory().numTensors);
   y.print();
+
+  const model = tf.sequential();
+
+  model.add(tf.layers.dense({inputShape:}))
