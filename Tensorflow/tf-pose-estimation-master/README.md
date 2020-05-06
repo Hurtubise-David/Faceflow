@@ -17,6 +17,6 @@ You need dependencies below.
 
 ### Install
 
-$ git clone https://www.github.com/ildoonet/tf-pose-estimation
-$ cd tf-pose-estimation
-$ pip3 install -r requirements.txt
+- git clone https://www.github.com/ildoonet/tf-pose-estimation
+- cd tf-pose-estimation
+- pip3 install -r requirements.txt
