@@ -1,4 +1,5 @@
 from distutils.core import setup, Extension
+#import setuptools  # important
 import numpy
 import os
 
