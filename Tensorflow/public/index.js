@@ -1,60 +1,183 @@
 
-//alert("Connected");
-//require('@tensorflow/tfjs-node')
-const facemesh = require('@tensorflow-models/facemesh');
 
 
-async function main() {
-  // Load the MediaPipe facemesh model.
-  const model = await facemesh.load();
+function isMobile() {
+const isAndroid = /Android/i.test(navigator.userAgent);
+const isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+return isAndroid || isiOS;
+}
 
-  // Pass in a video stream (or an image, canvas, or 3D tensor) to obtain an
-  // array of detected faces from the MediaPipe graph.
-  const predictions = await model.estimateFaces(document.querySelector("video"));
+function drawPath(ctx, points, closePath) {
+const region = new Path2D();
+region.moveTo(points[0][0], points[0][1]);
+for (let i = 1; i < points.length; i++) {
+  const point = points[i];
+  region.lineTo(point[0], point[1]);
+}
 
-  if (predictions.length > 0) {
-    /*
-    `predictions` is an array of objects describing each detected face, for example:
+if (closePath) {
+  region.closePath();
+}
+ctx.stroke(region);
+}
 
-    [
-      {
-        faceInViewConfidence: 1, // The probability of a face being present.
-        boundingBox: { // The bounding box surrounding the face.
-          topLeft: [232.28, 145.26],
-          bottomRight: [449.75, 308.36],
-        },
-        mesh: [ // The 3D coordinates of each facial landmark.
-          [92.07, 119.49, -17.54],
-          [91.97, 102.52, -30.54],
-          ...
-        ],
-        scaledMesh: [ // The 3D coordinates of each facial landmark, normalized.
-          [322.32, 297.58, -17.54],
-          [322.18, 263.95, -30.54]
-        ],
-        annotations: { // Semantic groupings of the `scaledMesh` coordinates.
-          silhouette: [
-            [326.19, 124.72, -3.82],
-            [351.06, 126.30, -3.00],
-            ...
-          ],
-          ...
-        }
+let model, ctx, videoWidth, videoHeight, video, canvas,
+  scatterGLHasInitialized = false, scatterGL;
+
+const VIDEO_SIZE = 500;
+const mobile = isMobile();
+// Don't render the point cloud on mobile in order to maximize performance and
+// to avoid crowding limited screen space.
+const renderPointcloud = mobile === false;
+//const stats = new Stats();
+const state = {
+backend: 'webgl',
+maxFaces: 1,
+triangulateMesh: true
+};
+
+if (renderPointcloud) {
+state.renderPointcloud = true;
+}
+
+function setupDatGui() {
+const gui = new dat.GUI();
+gui.add(state, 'backend', ['wasm', 'webgl', 'cpu'])
+    .onChange(async backend => {
+      await tf.setBackend(backend);
+    });
+
+gui.add(state, 'maxFaces', 1, 20, 1).onChange(async val => {
+  model = await facemesh.load({maxFaces: val});
+});
+
+gui.add(state, 'triangulateMesh');
+
+if (renderPointcloud) {
+  gui.add(state, 'renderPointcloud').onChange(render => {
+    document.querySelector('#scatter-gl-container').style.display =
+        render ? 'inline-block' : 'none';
+  });
+}
+}
+
+async function setupCamera() {
+video = document.getElementById('video');
+
+const stream = await navigator.mediaDevices.getUserMedia({
+  'audio': false,
+  'video': {
+    facingMode: 'user',
+    // Only setting the video to a specified size in order to accommodate a
+    // point cloud, so on mobile devices accept the default size.
+    width: mobile ? undefined : VIDEO_SIZE,
+    height: mobile ? undefined : VIDEO_SIZE
+  },
+});
+video.srcObject = stream;
+
+return new Promise((resolve) => {
+  video.onloadedmetadata = () => {
+    resolve(video);
+  };
+});
+}
+
+async function renderPrediction() {
+stats.begin();
+
+const predictions = await model.estimateFaces(video);
+ctx.drawImage(
+    video, 0, 0, videoWidth, videoHeight, 0, 0, canvas.width, canvas.height);
+
+if (predictions.length > 0) {
+  predictions.forEach(prediction => {
+    const keypoints = prediction.scaledMesh;
+
+    if (state.triangulateMesh) {
+      for (let i = 0; i < TRIANGULATION.length / 3; i++) {
+        const points = [
+          TRIANGULATION[i * 3], TRIANGULATION[i * 3 + 1],
+          TRIANGULATION[i * 3 + 2]
+        ].map(index => keypoints[index]);
+
+        drawPath(ctx, points, true);
       }
-    ]
-    */
-
-    for (let i = 0; i < predictions.length; i++) {
-      const keypoints = predictions[i].scaledMesh;
-
-      // Log facial keypoints.
+    } else {
       for (let i = 0; i < keypoints.length; i++) {
-        const [x, y, z] = keypoints[i];
+        const x = keypoints[i][0];
+        const y = keypoints[i][1];
 
-        console.log(`Keypoint ${i}: [${x}, ${y}, ${z}]`);
+        ctx.beginPath();
+        ctx.arc(x, y, 1 /* radius */, 0, 2 * Math.PI);
+        ctx.fill();
       }
     }
+  });
+
+  if (renderPointcloud && state.renderPointcloud && scatterGL != null) {
+    const pointsData = predictions.map(prediction => {
+      let scaledMesh = prediction.scaledMesh;
+      return scaledMesh.map(point => ([-point[0], -point[1], -point[2]]));
+    });
+
+    let flattenedPointsData = [];
+    for (let i = 0; i < pointsData.length; i++) {
+      flattenedPointsData = flattenedPointsData.concat(pointsData[i]);
+    }
+    const dataset = new ScatterGL.Dataset(flattenedPointsData);
+
+    if (!scatterGLHasInitialized) {
+      scatterGL.render(dataset);
+    } else {
+      scatterGL.updateDataset(dataset);
+    }
+    scatterGLHasInitialized = true;
   }
 }
+
+stats.end();
+requestAnimationFrame(renderPrediction);
+};
+
+async function main() {
+await tf.setBackend(state.backend);
+setupDatGui();
+
+//stats.showPanel(0);  // 0: fps, 1: ms, 2: mb, 3+: custom
+//document.getElementById('main').appendChild(stats.dom);
+
+await setupCamera();
+video.play();
+videoWidth = video.videoWidth;
+videoHeight = video.videoHeight;
+video.width = videoWidth;
+video.height = videoHeight;
+
+canvas = document.getElementById('output');
+canvas.width = videoWidth;
+canvas.height = videoHeight;
+const canvasContainer = document.querySelector('.canvas-wrapper');
+canvasContainer.style = `width: ${videoWidth}px; height: ${videoHeight}px`;
+
+ctx = canvas.getContext('2d');
+ctx.translate(canvas.width, 0);
+ctx.scale(-1, 1);
+ctx.fillStyle = '#32EEDB';
+ctx.strokeStyle = '#32EEDB';
+ctx.lineWidth = 0.5;
+
+model = await facemesh.load({maxFaces: state.maxFaces});
+renderPrediction();
+
+if (renderPointcloud) {
+  document.querySelector('#scatter-gl-container').style =
+      `width: ${VIDEO_SIZE}px; height: ${VIDEO_SIZE}px;`;
+
+  scatterGL = new ScatterGL(
+      document.querySelector('#scatter-gl-container'),
+      {'rotateOnStart': false, 'selectEnabled': false});
+}
+};
 
 main();

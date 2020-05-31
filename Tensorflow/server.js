@@ -11,24 +11,9 @@ app.use(express.urlencoded({ extended: true }))
 const browserDir = path.join(__dirname, 'browser')
 app.use(express.static(browserDir))
 app.use(express.static(path.join(__dirname, './public')))
-app.use(express.static(path.join(__dirname, './node_modules')))
 
 app.get('/', (req, res) => res.redirect('/FaceFlowapp'))
 app.get('/FaceFlowapp', (req, res) => res.sendFile(path.join(browserDir, 'home.html')))
-
-app.post('/fetch_external_image', async (req, res) => {
-  const { imageUrl } = req.body
-  if (!imageUrl) {
-    return res.status(400).send('imageUrl param required')
-  }
-  try {
-    const externalResponse = await request(imageUrl)
-    res.set('content-type', externalResponse.headers['content-type'])
-    return res.status(202).send(Buffer.from(externalResponse.body))
-  } catch (err) {
-    return res.status(404).send(err.toString())
-  }
-})
 
 app.listen(PORT, () => console.log('Listening on port 3000!'))
 

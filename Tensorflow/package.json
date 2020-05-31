@@ -12,34 +12,15 @@
   "author": "David Hurtubise",
   "license": "MIT",
   "dependencies": {
-    "@tensorflow-models/facemesh": "0.0.1",
+    "@tensorflow-models/facemesh": "^0.0.1",
     "@tensorflow/tfjs": "^2.0.0",
     "@tensorflow/tfjs-converter": "^1.6.1",
     "@tensorflow/tfjs-core": "^1.6.1",
     "@tensorflow/tfjs-node": "^2.0.0",
+    "dat.gui": "^0.7.7",
     "express": "^4.17.1",
     "request": "^2.88.2",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.3"
-  },
-  "browser": {
-    "crypto": false
-  },
-  "eslintConfig": {
-    "extends": "google",
-    "rules": {
-      "require-jsdoc": 0,
-      "valid-jsdoc": 0
-    },
-    "env": {
-      "es6": true
-    },
-    "parserOptions": {
-      "ecmaVersion": 8,
-      "sourceType": "module"
-    }
-  },
-  "eslintIgnore": [
-    "dist/"
-  ]
+  }
 }
