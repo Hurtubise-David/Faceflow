@@ -15,7 +15,7 @@ app.use(express.static(path.join(__dirname, './public')))
 app.get('/', (req, res) => res.redirect('/FaceFlowapp'))
 app.get('/FaceFlowapp', (req, res) => res.sendFile(path.join(browserDir, 'home.html')))
 
-app.listen(PORT, () => console.log('Listening on port 3000!'))
+app.listen(PORT, () => console.log('Listening on local port 3000! Welcome on FaceFlow App ;)'))
 
 function request(url, returnBuffer = true, timeout = 10000) {
   return new Promise(function(resolve, reject) {

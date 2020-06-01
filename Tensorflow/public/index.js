@@ -60,7 +60,12 @@ if (renderPointcloud) {
 }
 
 async function setupCamera() {
-video = document.getElementById('video');
+
+if ( confirm( "Do you want to connect your webcam with FaceFlow? ;)" ) ) {
+  video = document.getElementById('video');
+} else {
+  
+}
 
 const stream = await navigator.mediaDevices.getUserMedia({
   'audio': false,
