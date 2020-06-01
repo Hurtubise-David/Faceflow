@@ -1,6 +1,4 @@
 
-
-
 function isMobile() {
 const isAndroid = /Android/i.test(navigator.userAgent);
 const isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -29,7 +27,7 @@ const mobile = isMobile();
 // Don't render the point cloud on mobile in order to maximize performance and
 // to avoid crowding limited screen space.
 const renderPointcloud = mobile === false;
-//const stats = new Stats();
+const stats = new Stats();
 const state = {
 backend: 'webgl',
 maxFaces: 1,
@@ -140,44 +138,50 @@ stats.end();
 requestAnimationFrame(renderPrediction);
 };
 
-async function main() {
-await tf.setBackend(state.backend);
-setupDatGui();
+async function facemesh() {
+  //handler = .io.fileSystem();
+  model = await facemesh.load();
+  renderPrediction();
 
-//stats.showPanel(0);  // 0: fps, 1: ms, 2: mb, 3+: custom
-//document.getElementById('main').appendChild(stats.dom);
+  if (renderPointcloud) {
+    document.querySelector('#scatter-gl-container').style =
+        `width: ${VIDEO_SIZE}px; height: ${VIDEO_SIZE}px;`;
 
-await setupCamera();
-video.play();
-videoWidth = video.videoWidth;
-videoHeight = video.videoHeight;
-video.width = videoWidth;
-video.height = videoHeight;
-
-canvas = document.getElementById('output');
-canvas.width = videoWidth;
-canvas.height = videoHeight;
-const canvasContainer = document.querySelector('.canvas-wrapper');
-canvasContainer.style = `width: ${videoWidth}px; height: ${videoHeight}px`;
-
-ctx = canvas.getContext('2d');
-ctx.translate(canvas.width, 0);
-ctx.scale(-1, 1);
-ctx.fillStyle = '#32EEDB';
-ctx.strokeStyle = '#32EEDB';
-ctx.lineWidth = 0.5;
-
-model = await facemesh.load({maxFaces: state.maxFaces});
-renderPrediction();
-
-if (renderPointcloud) {
-  document.querySelector('#scatter-gl-container').style =
-      `width: ${VIDEO_SIZE}px; height: ${VIDEO_SIZE}px;`;
-
-  scatterGL = new ScatterGL(
-      document.querySelector('#scatter-gl-container'),
-      {'rotateOnStart': false, 'selectEnabled': false});
+    scatterGL = new ScatterGL(
+        document.querySelector('#scatter-gl-container'),
+        {'rotateOnStart': false, 'selectEnabled': false});
+  }
 }
+
+async function main() {
+  await tf.setBackend(state.backend);
+  setupDatGui();
+
+  stats.showPanel(0);  // 0: fps, 1: ms, 2: mb, 3+: custom
+  document.getElementById('main').appendChild(stats.dom);
+
+  await setupCamera();
+  video.play();
+  videoWidth = video.videoWidth;
+  videoHeight = video.videoHeight;
+  video.width = videoWidth;
+  video.height = videoHeight;
+
+  canvas = document.getElementById('output');
+  canvas.width = videoWidth;
+  canvas.height = videoHeight;
+  const canvasContainer = document.querySelector('.canvas-wrapper');
+  canvasContainer.style = `width: ${videoWidth}px; height: ${videoHeight}px`;
+
+  ctx = canvas.getContext('2d');
+  ctx.translate(canvas.width, 0);
+  ctx.scale(-1, 1);
+  ctx.fillStyle = '#32EEDB';
+  ctx.strokeStyle = '#32EEDB';
+  ctx.lineWidth = 0.5;
+
+  await facemesh();
+
 };
 
 main();
