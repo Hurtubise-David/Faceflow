@@ -84,7 +84,7 @@ return new Promise((resolve) => {
 async function renderPrediction() {
 stats.begin();
 
-const predictions = await model.estimateFaces(video);
+const predictions = await model//.estimateFaces(video);
 ctx.drawImage(
     video, 0, 0, videoWidth, videoHeight, 0, 0, canvas.width, canvas.height);
 
@@ -138,9 +138,8 @@ stats.end();
 requestAnimationFrame(renderPrediction);
 };
 
-async function facemesh() {
-  //handler = .io.fileSystem();
-  model = await facemesh.load();
+async function facemeshmodel() {
+  //const model = await facemesh.load('https://URL/TO/MODEL/model.json');
   renderPrediction();
 
   if (renderPointcloud) {
@@ -180,7 +179,7 @@ async function main() {
   ctx.strokeStyle = '#32EEDB';
   ctx.lineWidth = 0.5;
 
-  await facemesh();
+  await facemeshmodel();
 
 };
 
