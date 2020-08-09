@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>FaceFlow App</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.10.0">
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core">
+        import * as tf from '@tensorflow/tfjs-core';
+    </script>
+    <script src="https://mrdoob.github.io/stats.js/build/stats.js">
+        var Stats = require('../build/stats.js')
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl">
+        import * as tfjsWasm from '@tensorflow/tfjs-backend-webgl';
+        // TODO(annxingyuan): read version from tfjsWasm directly once
+        // https://github.com/tensorflow/tfjs/pull/2819 is merged.
+        import {version} from '@tensorflow/tfjs-backend-webgl/dist/version';
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.106.2/build/three.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/scatter-gl@0.0.1/lib/scatter-gl.min.js">
+    </script>
+
+
+    <style>
+        .canvas-wrapper, #scatter-gl-container {
+          display: inline-block;
+          vertical-align: top;
+        }
+      
+        #scatter-gl-container {
+          border: solid 1px black;
+          position: relative;
+        }
+      
+        /* center the canvas within its wrapper */
+        #scatter-gl-container canvas {
+          transform: translate3d(-50%, -50%, 0);
+          left: 50%;
+          top: 50%;
+          position: absolute;
+        }
+      </style>
+</head>
+<body>
+    <div id="main">
+      <div class="container">        
+        <img src="Images/FaceFlow Logo.png" alt="FaceFlow logo" width="40%" height="40%">
+        <div class="canvas-wrapper">
+          <canvas id="output"></canvas>
+          <video id="video" playsinline style="
+            -webkit-transform: scaleX(-1);
+            transform: scaleX(-1);
+            visibility: hidden;
+            width: auto;
+            height: auto;
+            ">
+          </video>
+        </div>
+        <div id="scatter-gl-container"></div>
+      </div>
+    </div>
+</body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.6/dat.gui.min.js">
+    // import * as dat from 'https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.6/dat.gui.min.js';
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/facemesh">
+        import * as facemesh from '@tensorflow-models/facemesh';       
+    </script>
+    <script src="index.js">
+        import {TRIANGULATION} from './triangulation';
+    </script>
+</html>

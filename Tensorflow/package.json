@@ -1,0 +1,20 @@
+{
+  "name": "faceflowapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": "David Hurtubise",
+  "license": "MIT",
+  "dependencies": {
+    "@tensorflow-models/facemesh": "^0.0.1",
+    "@tensorflow/tfjs-converter": "^1.6.1",
+    "@tensorflow/tfjs-core": "^0.6.0",
+    "dat.gui": "^0.7.7",
+    "express": "^4.17.1",
+    "request": "^2.88.2",
+    "stats.js": "^0.17.0",
+    "tfjs": "^0.6.0",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.3"
+  }
+}
