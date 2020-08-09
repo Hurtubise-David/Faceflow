@@ -5410,6 +5410,11 @@ readdirp@^2.2.1:
     micromatch "^3.1.10"
     readable-stream "^2.0.2"
 
+reflect-metadata@^0.1.12:
+  version "0.1.13"
+  resolved "https://registry.yarnpkg.com/reflect-metadata/-/reflect-metadata-0.1.13.tgz#67ae3ca57c972a2aa1642b10fe363fe32d49dc08"
+  integrity sha512-Ts1Y/anZELhSsjMcU605fU9RE4Oi3p5ORujwbIKXfWa+0Zxs510Qrmrce5/Jowq3cHSZSJqBjypxmHarc+vEWg==
+
 regenerate-unicode-properties@^8.1.0:
   version "8.1.0"
   resolved "https://registry.yarnpkg.com/regenerate-unicode-properties/-/regenerate-unicode-properties-8.1.0.tgz#ef51e0f0ea4ad424b77bf7cb41f3e015c70a3f0e"
@@ -6375,6 +6380,13 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
+
+typescript-json-object-mapper@^1.4.5:
+  version "1.4.5"
+  resolved "https://registry.yarnpkg.com/typescript-json-object-mapper/-/typescript-json-object-mapper-1.4.5.tgz#1cef9df0db62be47f3753ec37291388b7f821af8"
+  integrity sha512-f9OTKLFaa79y1OMqwlA8SlxykRLzhNlaPBDRvO5IgTIJeVGJVIEPshwyWSmkCu/m7apFB9IUqlyn6oanWYEtpQ==
+  dependencies:
+    reflect-metadata "^0.1.12"
 
 uncss@^0.17.2:
   version "0.17.3"

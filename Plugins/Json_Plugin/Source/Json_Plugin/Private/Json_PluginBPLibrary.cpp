@@ -13,43 +13,12 @@ UJson_PluginBPLibrary::UJson_PluginBPLibrary(const FObjectInitializer& ObjectIni
 
 }
 
-bool UJson_PluginBPLibrary::WriteJsonFile(FString FileName, FString Server, TArray<FString> ServerItems, TArray<int> ItemValue)
-{
-	JsonObjectPtr JsonMainObject = MakeShareable(new FJsonObject);
-
-	JsonMainObject->SetStringField("Servers", Server);
-
-	TArray<JsonValuePtr> ServerItemsArray;
-	for (FString V : ServerItems)
-	{
-		ServerItemsArray.Add(MakeShareable(new FJsonValueString(V)));
-	}
-	JsonMainObject->SetArrayField("ID", ServerItemsArray);
-
-	TArray<JsonValuePtr> ItemValueCountArray;
-	for (int i : ItemValue)
-	{
-		ItemValueCountArray.Add(MakeShareable(new FJsonValueNumber(i)));
-	}
-	JsonMainObject->SetArrayField("Mode", ItemValueCountArray);
-
-	FString OutputString;
-	TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&OutputString);
-	FJsonSerializer::Serialize(JsonMainObject.ToSharedRef(), Writer);
-
-	FString Path;
-	Path = FPaths::ProjectDir() / "Json";
-	Path += "/";
-	Path += FileName;
-
-	return FFileHelper::SaveStringToFile(OutputString, *Path);
-}
 
 bool UJson_PluginBPLibrary::ReadJsonFile(FString FileName, FString &Server, TArray<FString> &ServerItems, TArray<int> &ItemValue)
 {
 	FString RawData;
 	FString Path;
-	Path = FPaths::ProjectDir() / "Json";
+	Path = FPaths::ProjectDir() / "Tensorflow/facemesh/src";
 	Path += "/";
 	Path += FileName;
 
@@ -62,17 +31,17 @@ bool UJson_PluginBPLibrary::ReadJsonFile(FString FileName, FString &Server, TArr
 
 			if (FJsonSerializer::Deserialize(JsonReader, JsonMainObject))
 			{
-					Server = JsonMainObject->GetStringField("Servers");
+					Server = JsonMainObject->GetStringField("MESH_ANNOTATIONS");
 					
-					for (JsonValuePtr V : JsonMainObject->GetArrayField("ID"))
+					for (JsonValuePtr V : JsonMainObject->GetArrayField("lipsUpperOuter"))
 					{
 						ServerItems.Add(V->AsString());
 					}
 
-					for (JsonValuePtr V : JsonMainObject->GetArrayField("Mode"))
-					{
-						ItemValue.Add(V->AsNumber());
-					}
+					//for (JsonValuePtr V : JsonMainObject->GetArrayField("Mode"))
+					//{
+					//	ItemValue.Add(V->AsNumber());
+					//}
 			return true;
 			}
 		}

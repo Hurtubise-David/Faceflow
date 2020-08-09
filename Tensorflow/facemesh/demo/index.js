@@ -141,6 +141,12 @@ async function renderPrediction() {
           ctx.fill();
         }
       }
+    // Log facial keypoints.
+    for (let i = 0; i < keypoints.length; i++) {
+      const [x, y, z] = keypoints[i];
+
+      console.log(`Keypoint ${i}: [${x}, ${y}, ${z}]`);
+    }
     });
 
     if (renderPointcloud && state.renderPointcloud && scatterGL != null) {

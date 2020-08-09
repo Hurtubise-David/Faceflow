@@ -26446,7 +26446,7 @@ b.fillRect(d,m,n,p);b.fillStyle=l;b.globalAlpha=.9;b.fillRect(d,m,n,p);return{do
 
 },{}],"node_modules/@tensorflow/tfjs-backend-wasm/dist/tf-backend-wasm.esm.js":[function(require,module,exports) {
 var process = require("process");
-var __dirname = "D:\\GitHub\\LBE_Template\\Tensorflow\\facemesh\\demo\\node_modules\\@tensorflow\\tfjs-backend-wasm\\dist";
+var __dirname = "D:\\GitHub\\FaceflowApp\\Tensorflow\\facemesh\\demo\\node_modules\\@tensorflow\\tfjs-backend-wasm\\dist";
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -28533,6 +28533,12 @@ async function renderPrediction() {
           , 0, 2 * Math.PI);
           ctx.fill();
         }
+      } // Log facial keypoints.
+
+
+      for (let i = 0; i < keypoints.length; i++) {
+        const [x, y, z] = keypoints[i];
+        console.log(`Keypoint ${i}: [${x}, ${y}, ${z}]`);
       }
     });
 
