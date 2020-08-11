@@ -5,12 +5,18 @@
 	"Description": "",
 	"Modules": [
 		{
-			"Name": "LBE_Template",
+			"Name": "FaceflowDemo",
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
 				"Engine"
 			]
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "LiveLink",
+			"Enabled": true
 		}
 	]
 }

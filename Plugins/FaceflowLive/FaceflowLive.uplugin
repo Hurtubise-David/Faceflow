@@ -1,0 +1,23 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "FaceflowLive",
+	"Description": "Faceflow to Livelink Plugin over socket.io",
+	"Category": "Animation",
+	"CreatedBy": "David Hurtubise and Alban Bergeret",
+	"CreatedByURL": "",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": true,
+	"Installed": true,
+  "Modules": [
+    {
+      "Name": "FaceflowLive",
+      "Type": "Runtime",
+      "LoadingPhase": "Default"
+    }
+  ]
+}
