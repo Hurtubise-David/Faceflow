@@ -9,7 +9,8 @@ More background information about the model, as well as its performance characte
 ## Installation
 
 You need to install yarn to build the app.
-Intall the app using the shell command FaceFlowApp.sh:
+
+Install the app using the shell command FaceFlowApp.sh:
 
     $ cd D:/GitHub/FaceflowApp/Tensorflow/facemesh/demo (YourDir)
     $ yarn 
