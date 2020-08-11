@@ -59,7 +59,7 @@ const mobile = isMobile();
 const renderPointcloud = mobile === false;
 const stats = new Stats();
 const state = {
-  backend: 'wasm',
+  backend: 'webgl',
   maxFaces: 1,
   triangulateMesh: true
 };
@@ -69,24 +69,7 @@ if (renderPointcloud) {
 }
 
 function setupDatGui() {
-  const gui = new dat.GUI();
-  gui.add(state, 'backend', ['wasm', 'webgl', 'cpu'])
-      .onChange(async backend => {
-        await tf.setBackend(backend);
-      });
-
-  gui.add(state, 'maxFaces', 1, 20, 1).onChange(async val => {
-    model = await facemesh.load({maxFaces: val});
-  });
-
-  gui.add(state, 'triangulateMesh');
-
-  if (renderPointcloud) {
-    gui.add(state, 'renderPointcloud').onChange(render => {
-      document.querySelector('#scatter-gl-container').style.display =
-          render ? 'inline-block' : 'none';
-    });
-  }
+ //const gui = new dat.GUI();
 }
 
 async function setupCamera() {
