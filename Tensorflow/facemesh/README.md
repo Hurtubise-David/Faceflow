@@ -8,15 +8,12 @@ More background information about the model, as well as its performance characte
 
 ## Installation
 
-Using `yarn`:
+You need to install yarn to build the app
+Using the shell command FaceFlowApp.sh:
 
-    $ yarn add @tensorflow-models/facemesh
-
-Using `npm`:
-
-    $ npm install @tensorflow-models/facemesh
-
-Note that this package specifies `@tensorflow/tfjs-core` and `@tensorflow/tfjs-converter` as peer dependencies, so they will also need to be installed.
+    $ cd D:/GitHub/FaceflowApp/Tensorflow/facemesh/demo (YourDir)
+    $ yarn 
+    $ yarn watch
 
 
 #### Keypoints
