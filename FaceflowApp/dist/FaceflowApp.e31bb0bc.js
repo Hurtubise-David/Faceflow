@@ -28558,7 +28558,7 @@ async function renderPrediction() {
 async function main() {
   await tf.setBackend(state.backend);
   setupDatGui();
-  stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+  stats.showPanel(3); // 0: fps, 1: ms, 2: mb, 3+: custom
 
   document.getElementById('main').appendChild(stats.dom);
   await setupCamera();
