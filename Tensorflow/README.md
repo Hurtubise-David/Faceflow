@@ -1,66 +1,25 @@
-# MediaPipe Facemesh demo
+# Facemesh
 
-## Contents
+Tensorflow Facemesh model is a lightweight machine learning pipeline predicting 486 3D facial landmarks to infer the approximate surface geometry of a human face ([paper](https://arxiv.org/pdf/1907.06724.pdf)).
 
-The MediaPipe Facemesh demo shows how to use the MediaPipe Facemesh model to estimate keypoints on a face.
 
-## Setup
+More background information about the model, as well as its performance characteristics on different datasets, can be found here: [https://drive.google.com/file/d/1VFC_wIpw4O7xBOiTgUldl79d9LA-LsnA/view](https://drive.google.com/file/d/1VFC_wIpw4O7xBOiTgUldl79d9LA-LsnA/view)
 
-cd into the demo folder:
 
-```sh
-cd facemesh/demo
-```
+## Installation
 
-Install dependencies and prepare the build directory:
+You need to install yarn to build the app.
+Intall the app using the shell command FaceFlowApp.sh:
 
-```sh
-yarn
-```
+    $ cd D:/GitHub/FaceflowApp/Tensorflow/facemesh/demo (YourDir)
+    $ yarn 
+    $ yarn watch
 
-To watch files for changes, and launch a dev server:
 
-```sh
-yarn watch
-```
+#### Keypoints
 
-## If you are developing facemesh locally, and want to test the changes in the demos
+Here is map of the keypoints:
 
-Cd into the facemesh folder:
-```sh
-cd facemesh
-```
+<img src="mesh_map.jpg" alt="keypoints_map" style="width: 500px; height: 500px">
 
-Install dependencies:
-```sh
-yarn
-```
-
-Publish facemesh locally:
-```sh
-yarn build && yarn yalc publish
-```
-
-Cd into the demos and install dependencies:
-
-```sh
-cd demo
-yarn
-```
-
-Link the local facemesh to the demos:
-```sh
-yarn yalc link @tensorflow-models/facemesh
-```
-
-Start the dev demo server:
-```sh
-yarn watch
-```
-
-To get future updates from the facemesh source code:
-```
-# cd up into the facemesh directory
-cd ../
-yarn build && yarn yalc push
-```
+The UV coordinates for these keypoints are available via the `getUVCoords()` method on the `FaceMesh` model object. They can also be found in `src/uv_coords.ts`.
