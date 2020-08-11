@@ -19,8 +19,35 @@ Install the app using the shell command FaceFlowApp.sh:
 
 #### Keypoints
 
-Here is map of the keypoints:
+Here is a list of the keypoints, available on the web console log:
 
-<img src="mesh_map.jpg" alt="keypoints_map" style="width: 500px; height: 500px">
-
-The UV coordinates for these keypoints are available via the `getUVCoords()` method on the `FaceMesh` model object. They can also be found in `src/uv_coords.ts`.
+  silhouette,
+  lipsUpperOuter,
+  lipsLowerOuter,
+  lipsUpperInner,
+  lipsLowerInner,
+  rightEyeUpper0,
+  rightEyeLower0,
+  rightEyeUpper1,
+  rightEyeLower1,
+  rightEyeUpper2,
+  rightEyeLower2,
+  rightEyeLower3,
+  rightEyebrowUpper,
+  rightEyebrowLower,
+  leftEyeUpper0,
+  leftEyeLower0,
+  leftEyeUpper1,
+  leftEyeLower1,
+  leftEyeUpper2,
+  leftEyeLower2,
+  leftEyeLower3,
+  leftEyebrowUpper,
+  leftEyebrowLower,
+  midwayBetweenEyes,
+  noseTip,
+  noseBottom,
+  noseRightCorner,
+  noseLeftCorner,
+  rightCheek,
+  leftCheek.
