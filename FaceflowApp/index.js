@@ -50,7 +50,7 @@ function drawPath(ctx, points, closePath) {
 }
 
 let model, ctx, videoWidth, videoHeight, video, canvas,
-    scatterGLHasInitialized = false, scatterGL, socket, socketOpen = false;
+    scatterGLHasInitialized = false, scatterGL, iosocket;
 
 const VIDEO_SIZE = 500;
 const mobile = isMobile();
@@ -125,28 +125,30 @@ async function renderPrediction() {
         }
       }
 
-   
+
+      // Face keypoints have been computed
+      // Format Face Pose message and send to the relaying server
       const annotations = facemesh.FaceMesh.getAnnotations();
-      var output = Object.entries(annotations).map(([key, value]) => ({key,value}));
-      
-      for (let partIndex = 0; partIndex < output.length; partIndex++) {
-         console.log(output[partIndex].key);
-          const indexArray = output[partIndex].value;
+      var output = Object.entries(annotations).map(([key, value]) => ({ key, value })); // Trick to transform the annotation data in a exploitable object. 
 
-           for (let i = 0; i < indexArray.length; i++) {
-            const index = indexArray[i];
-           const [x, y, z] = keypoints[index];
+      for (let partIndex = 0; partIndex < output.length; partIndex++) { // For each face part
+        const partName = output[partIndex].key;
+        iosocket.emit('face pose', `${partName}`);
+        // Uncomment to log part name... 
+        // console.log(partName);
 
-           console.log(`Keypoint ${index}: [${x}, ${y}, ${z}]`); 
+        const partKeypointsIndexArray = output[partIndex].value;
+        for (let i = 0; i < partKeypointsIndexArray.length; i++) {
+          const index = partKeypointsIndexArray[i];
+          const [x, y, z] = keypoints[index];
+          iosocket.emit('face pose', `Keypoint ${index}: [${x}, ${y}, ${z}]`);
 
-           if (socketOpen)
-           {
-            socket.send('Hello Server!');
-           }
-           
-
-          }
+          // Uncomment to log keypoints... 
+          // console.log(`Keypoint ${index}: [${x}, ${y}, ${z}]`); 
+        }
       }
+
+
     });
 
     if (renderPointcloud && state.renderPointcloud && scatterGL != null) {
@@ -174,55 +176,7 @@ async function renderPrediction() {
   requestAnimationFrame(renderPrediction);
 };
 
-async function websocket() {
-
-  const app = require('express')();
-  const http = require('http').Server(app);
-  const io = require('socket.io')(http);
-  const util = require('util');
-  const port = 3000;
-  const clients = [];	//track connected clients
-  
-  //Server Web Client
-  app.get('/', function(req, res){
-    res.sendFile(__dirname + '/index.html');
-  });
-  
-  //make one reference to event name so it can be easily renamed 
-  const chatEvent = "chatMessage";
-  
-  //When a client connects, bind each desired event to the client socket
-  io.on('connection', socket =>{
-    //track connected clients via log
-    clients.push(socket.id);
-    const clientConnectedMsg = 'User connected ' + util.inspect(socket.id) + ', total: ' + clients.length;
-    io.emit(chatEvent, clientConnectedMsg);
-    console.log(clientConnectedMsg);
-  
-    //track disconnected clients via log
-    socket.on('disconnect', ()=>{
-      clients.pop(socket.id);
-      const clientDisconnectedMsg = 'User disconnected ' + util.inspect(socket.id) + ', total: ' + clients.length;
-      io.emit(chatEvent, clientDisconnectedMsg);
-      console.log(clientDisconnectedMsg);
-    })
-  
-    //multicast received message from client
-    socket.on(chatEvent, msg =>{
-      const combinedMsg = socket.id.substring(0,4) + ': ' + msg;
-      io.emit(chatEvent, combinedMsg);
-      console.log('multicast: ' + combinedMsg);
-    });
-  });
-no
-  //Start the Server
-  http.listen(port, () => {
-    console.log('listening on *:' + port);
-  });
-};
-
 async function main() {
-  //await websocket();
   await tf.setBackend(state.backend);
   setupDatGui();
 
@@ -249,23 +203,20 @@ async function main() {
   ctx.strokeStyle = '#32EEDB';
   ctx.lineWidth = 0.5;
 
-  socket = new WebSocket('ws://localhost:1212');
+  // Create a socket.io object to send data to the server
+  // TODO David : Comment configurer host/port ? on peut faire passer des arguments ou le faire dans la page Web ?
+  iosocket = io('http://localhost:3000');
+  iosocket.connect();
 
-// Connection opened
-socket.addEventListener('open', function (event) {
-  socketOpen = true; // socket.send('Hello Server!');
-});
+  // // Uncomment if you want to output the data broadcasted by the server to the console
+  // // NB "face pose" is a convention to identify message - can be changed but should be consistent across all clients and server
+  // iosocket.on('face pose', function(msg) {  
+  //   console.log(`Received a message : ${msg}`); 
+  // });
 
-// Listen for messages
-socket.addEventListener('message', function (event) {
-  console.log('Message from server ', event.data);
-});
 
   model = await facemesh.load({maxFaces: state.maxFaces});
   renderPrediction();
-
-
-
 };
 
 
