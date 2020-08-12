@@ -17,6 +17,10 @@
 		{
 			"Name": "LiveLink",
 			"Enabled": true
+		},
+		{
+			"Name": "FaceflowLive",
+			"Enabled": true
 		}
 	]
 }
