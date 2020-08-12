@@ -50,7 +50,7 @@ function drawPath(ctx, points, closePath) {
 }
 
 let model, ctx, videoWidth, videoHeight, video, canvas,
-    scatterGLHasInitialized = false, scatterGL;
+    scatterGLHasInitialized = false, scatterGL, socket, socketOpen = false;
 
 const VIDEO_SIZE = 500;
 const mobile = isMobile();
@@ -124,12 +124,29 @@ async function renderPrediction() {
           ctx.fill();
         }
       }
-    // Log facial keypoints.
-    for (let i = 0; i < keypoints.length; i++) {
-      const [x, y, z] = keypoints[i];
 
-      console.log(`Keypoint ${i}: [${x}, ${y}, ${z}]`);
-    }
+    
+      const annotations = facemesh.FaceMesh.getAnnotations();
+      var output = Object.entries(annotations).map(([key, value]) => ({key,value}));
+      
+      for (let partIndex = 0; partIndex < output.length; partIndex++) {
+         console.log(output[partIndex].key);
+          const indexArray = output[partIndex].value;
+
+           for (let i = 0; i < indexArray.length; i++) {
+            const index = indexArray[i];
+           const [x, y, z] = keypoints[index];
+
+           console.log(`Keypoint ${index}: [${x}, ${y}, ${z}]`); 
+
+           if (socketOpen)
+           {
+            socket.send('Hello Server!');
+           }
+           
+
+          }
+      }
     });
 
     if (renderPointcloud && state.renderPointcloud && scatterGL != null) {
@@ -183,6 +200,18 @@ async function main() {
   ctx.fillStyle = '#32EEDB';
   ctx.strokeStyle = '#32EEDB';
   ctx.lineWidth = 0.5;
+
+  socket = new WebSocket('ws://localhost:1212');
+
+// Connection opened
+socket.addEventListener('open', function (event) {
+  socketOpen = true; // socket.send('Hello Server!');
+});
+
+// Listen for messages
+socket.addEventListener('message', function (event) {
+  console.log('Message from server ', event.data);
+});
 
   model = await facemesh.load({maxFaces: state.maxFaces});
   renderPrediction();
