@@ -13,6 +13,8 @@
     "@tensorflow/tfjs-backend-wasm": "^1.5.2-alpha1",
     "@tensorflow/tfjs-converter": "^1.6.1",
     "@tensorflow/tfjs-core": "^1.6.1",
+    "express": "^4.17.1",
+    "socket.io": "^2.0.0",
     "stats.js": "^0.17.0",
     "ts.data.json": "^1.2.0",
     "typescript-json-object-mapper": "^1.4.5"

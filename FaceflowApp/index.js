@@ -128,7 +128,7 @@ async function renderPrediction() {
     for (let i = 0; i < keypoints.length; i++) {
       const [x, y, z] = keypoints[i];
 
-      console.log(`Keypoint ${i}: [${x}, ${y}, ${z}]`);
+      //console.log(`Keypoint ${i}: [${x}, ${y}, ${z}]`);
     }
     });
 
@@ -157,13 +157,61 @@ async function renderPrediction() {
   requestAnimationFrame(renderPrediction);
 };
 
+async function websocket() {
+
+  const app = require('express')();
+  const http = require('http').Server(app);
+  const io = require('socket.io')(http);
+  const util = require('util');
+  const port = 3000;
+  const clients = [];	//track connected clients
+  
+  //Server Web Client
+  app.get('/', function(req, res){
+    res.sendFile(__dirname + '/index.html');
+  });
+  
+  //make one reference to event name so it can be easily renamed 
+  const chatEvent = "chatMessage";
+  
+  //When a client connects, bind each desired event to the client socket
+  io.on('connection', socket =>{
+    //track connected clients via log
+    clients.push(socket.id);
+    const clientConnectedMsg = 'User connected ' + util.inspect(socket.id) + ', total: ' + clients.length;
+    io.emit(chatEvent, clientConnectedMsg);
+    console.log(clientConnectedMsg);
+  
+    //track disconnected clients via log
+    socket.on('disconnect', ()=>{
+      clients.pop(socket.id);
+      const clientDisconnectedMsg = 'User disconnected ' + util.inspect(socket.id) + ', total: ' + clients.length;
+      io.emit(chatEvent, clientDisconnectedMsg);
+      console.log(clientDisconnectedMsg);
+    })
+  
+    //multicast received message from client
+    socket.on(chatEvent, msg =>{
+      const combinedMsg = socket.id.substring(0,4) + ': ' + msg;
+      io.emit(chatEvent, combinedMsg);
+      console.log('multicast: ' + combinedMsg);
+    });
+  });
+no
+  //Start the Server
+  http.listen(port, () => {
+    console.log('listening on *:' + port);
+  });
+};
+
 async function main() {
+  //await websocket();
   await tf.setBackend(state.backend);
   setupDatGui();
 
   stats.showPanel(3);  // 0: fps, 1: ms, 2: mb, 3+: custom
   document.getElementById('main').appendChild(stats.dom);
-
+  
   await setupCamera();
   video.play();
   videoWidth = video.videoWidth;
@@ -187,14 +235,8 @@ async function main() {
   model = await facemesh.load({maxFaces: state.maxFaces});
   renderPrediction();
 
-  if (renderPointcloud) {
-    document.querySelector('#scatter-gl-container').style =
-        `width: ${VIDEO_SIZE}px; height: ${VIDEO_SIZE}px;`;
 
-    scatterGL = new ScatterGL(
-        document.querySelector('#scatter-gl-container'),
-        {'rotateOnStart': false, 'selectEnabled': false});
-  }
+
 };
 
 
