@@ -17,6 +17,7 @@
 
 import * as facemesh from '@tensorflow-models/facemesh';
 import Stats from 'stats.js';
+import MyTimer from './MyTimer';
 import * as tf from '@tensorflow/tfjs-core';
 import * as tfjsWasm from '@tensorflow/tfjs-backend-wasm';
 // TODO(annxingyuan): read version from tfjsWasm directly once
@@ -50,7 +51,7 @@ function drawPath(ctx, points, closePath) {
 }
 
 let model, ctx, videoWidth, videoHeight, video, canvas,
-    scatterGLHasInitialized = false, scatterGL, iosocket;
+    scatterGLHasInitialized = false, scatterGL, iosocket, myTimer;
 
 const VIDEO_SIZE = 500;
 const mobile = isMobile();
@@ -125,13 +126,22 @@ async function renderPrediction() {
         }
       }
 
+      var message = ""; 
+
+      // Get Timecode
+      if (!myTimer.isRunning)
+      {
+          myTimer.start();
+      }
+      const elapsedSec = myTimer.getTime() / 1000.0;
+      // console.log(elapsedSec);
+      message = message + `${elapsedSec} / `;
 
       // Face keypoints have been computed
       // Format Face Pose message and send to the relaying server
       const annotations = facemesh.FaceMesh.getAnnotations();
       var output = Object.entries(annotations).map(([key, value]) => ({ key, value })); // Trick to transform the annotation data in a exploitable object. 
 
-      var message = ""; 
       for (let partIndex = 0; partIndex < output.length; partIndex++) { // For each face part
         const partName = output[partIndex].key;
 
@@ -229,6 +239,8 @@ async function main() {
   //   console.log(`Received a message : ${msg}`); 
   // });
 
+
+  myTimer = new MyTimer();
 
   model = await facemesh.load({maxFaces: state.maxFaces});
   renderPrediction();
