@@ -135,7 +135,7 @@ async function renderPrediction() {
       for (let partIndex = 0; partIndex < output.length; partIndex++) { // For each face part
         const partName = output[partIndex].key;
 
-        message = message + `${partName} `;
+        message = message + `${partName} | `;
 
         // iosocket.emit('face pose', `${partName}`);
         // Uncomment to log part name... 
@@ -154,6 +154,10 @@ async function renderPrediction() {
 
           // Uncomment to log keypoints... 
           // console.log(`Keypoint ${index}: [${x}, ${y}, ${z}]`); 
+        }
+
+        if ( partIndex < output.length -1 ) {
+          message = message + ";";
         }
       }
 
