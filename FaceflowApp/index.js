@@ -131,22 +131,33 @@ async function renderPrediction() {
       const annotations = facemesh.FaceMesh.getAnnotations();
       var output = Object.entries(annotations).map(([key, value]) => ({ key, value })); // Trick to transform the annotation data in a exploitable object. 
 
+      var message = ""; 
       for (let partIndex = 0; partIndex < output.length; partIndex++) { // For each face part
         const partName = output[partIndex].key;
-        iosocket.emit('face pose', `${partName}`);
+
+        message = message + `${partName} `;
+
+        // iosocket.emit('face pose', `${partName}`);
         // Uncomment to log part name... 
         // console.log(partName);
 
+        
         const partKeypointsIndexArray = output[partIndex].value;
         for (let i = 0; i < partKeypointsIndexArray.length; i++) {
           const index = partKeypointsIndexArray[i];
           const [x, y, z] = keypoints[index];
-          iosocket.emit('face pose', `Keypoint ${index}: [${x}, ${y}, ${z}]`);
+          
+          message = message + `Keypoint ${index}: [${x}, ${y}, ${z}] `;
+          
+          // One message per keypoint
+          // iosocket.emit('face pose', `Keypoint ${index}: [${x}, ${y}, ${z}]`);
 
           // Uncomment to log keypoints... 
           // console.log(`Keypoint ${index}: [${x}, ${y}, ${z}]`); 
         }
       }
+
+      iosocket.emit('face pose', message);
 
 
     });
