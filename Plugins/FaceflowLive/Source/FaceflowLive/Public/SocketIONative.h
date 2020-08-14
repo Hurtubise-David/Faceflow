@@ -56,7 +56,7 @@ struct FSIOBoundEvent
 };
 
 
-class SOCKETIOCLIENT_API FSocketIONative
+class FACEFLOWLIVE_API FSocketIONative
 {
 public:
 

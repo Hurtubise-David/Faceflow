@@ -51,8 +51,10 @@ public class FaceflowLive : ModuleRules
 			{
 				"Core",
 				"LiveLinkInterface",
-				"Messaging",
-			});
+                "SIOJson",
+                "Messaging",
+                "CoreUtility",
+            });
 
 		PrivateDependencyModuleNames.AddRange(
 			new string[]
