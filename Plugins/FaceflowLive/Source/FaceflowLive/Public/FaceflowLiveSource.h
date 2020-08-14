@@ -13,6 +13,8 @@ class FSocket;
 class ILiveLinkClient;
 class ISocketSubsystem;
 
+class FSocketIONative;
+
 class FACEFLOWLIVE_API FFaceflowLiveSource : public ILiveLinkSource, public FRunnable
 {
 public:
@@ -46,6 +48,22 @@ public:
 	// End FRunnable Interface
 
 	void HandleReceivedData(TSharedPtr<TArray<uint8>, ESPMode::ThreadSafe> ReceivedData);
+
+	/**
+* Request a new plugin scoped pointer as a shared ptr.
+*/
+	virtual TSharedPtr<FSocketIONative> NewValidNativePointer() { return nullptr; };
+
+	/**
+	* Request a shared FSocketIONative instance for a given id. May allocate a new pointer.
+	*/
+	virtual TSharedPtr<FSocketIONative> ValidSharedNativePointer(FString SharedId) { return nullptr; };
+
+	/**
+	* Releases the given plugin scoped pointer using a background thread
+	* After calling this function make sure to set your pointer to nullptr.
+	*/
+	virtual void ReleaseNativePointer(TSharedPtr<FSocketIONative> PointerToRelease) {};
 
 private:
 

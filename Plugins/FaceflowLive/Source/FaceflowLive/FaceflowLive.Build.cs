@@ -9,8 +9,18 @@ public class FaceflowLive : ModuleRules
         {
             get { return Path.GetFullPath(Path.Combine(ModuleDirectory, "../ThirdParty/")); }
         }
-		
-	public FaceflowLive(ReadOnlyTargetRules Target) : base(Target)
+
+    private string SocketIOThirdParty
+    {
+        get { return Path.GetFullPath(Path.Combine(ThirdPartyPath, "SocketIO")); }
+    }
+
+    private string BoostThirdParty
+    {
+        get { return Path.GetFullPath(Path.Combine(ThirdPartyPath, "Boost")); }
+    }
+
+    public FaceflowLive(ReadOnlyTargetRules Target) : base(Target)
 	{
 		
 		
@@ -55,7 +65,9 @@ public class FaceflowLive : ModuleRules
 				"Networking",
 				"Slate",
 				"SlateCore",
-				"Sockets",
+                "SocketIOLib",
+                "Sockets",
 			});
-	}
+
+    }
 }

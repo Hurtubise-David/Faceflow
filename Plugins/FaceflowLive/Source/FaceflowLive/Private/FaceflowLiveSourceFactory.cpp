@@ -7,12 +7,12 @@
 
 FText UFaceflowLiveSourceFactory::GetSourceDisplayName() const
 {
-	return LOCTEXT("SourceDisplayName", "FACEFLOW LiveLink");
+	return LOCTEXT("SourceDisplayName", "FaceFlow LiveLink");
 }
 
 FText UFaceflowLiveSourceFactory::GetSourceTooltip() const
 {
-	return LOCTEXT("SourceTooltip", "Creates a connection to FACEFLOW UDP Stream");
+	return LOCTEXT("SourceTooltip", "Creates a connection to FACEFLOW SocketIO");
 }
 
 TSharedPtr<SWidget> UFaceflowLiveSourceFactory::BuildCreationPanel(FOnLiveLinkSourceCreated InOnLiveLinkSourceCreated) const

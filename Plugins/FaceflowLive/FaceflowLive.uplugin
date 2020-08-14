@@ -20,6 +20,19 @@
       "LoadingPhase": "Default"
     },
     {
+      "Name": "SIOJson",
+      "Type": "Runtime",
+      "LoadingPhase": "PreDefault",
+      "WhitelistPlatforms": [
+        "Win64",
+        "Win32",
+        "Linux",
+        "Mac",
+        "Android",
+        "IOS"
+      ]
+    },
+    {
       "Name": "SocketIOLib",
       "Type": "Runtime",
       "LoadingPhase": "PreDefault",
