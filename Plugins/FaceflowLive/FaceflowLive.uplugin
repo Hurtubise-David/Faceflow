@@ -18,6 +18,19 @@
       "Name": "FaceflowLive",
       "Type": "Runtime",
       "LoadingPhase": "Default"
+    },
+    {
+      "Name": "SocketIOLib",
+      "Type": "Runtime",
+      "LoadingPhase": "PreDefault",
+      "WhitelistPlatforms": [
+        "Win64",
+        "Win32",
+        "Linux",
+        "Mac",
+        "Android",
+        "IOS"
+      ]
     }
   ]
 }
